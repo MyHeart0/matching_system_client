@@ -1,55 +1,3 @@
-<!--<template>-->
-<!--  <form action="/">-->
-<!--    <van-search-->
-<!--        v-model="searchText"-->
-<!--        show-action-->
-<!--        placeholder="请输入搜索的标签"-->
-<!--        @search="onSearch"-->
-<!--        @cancel="onCancel"-->
-<!--    />-->
-<!--  </form>-->
-
-<!--  <van-divider content-position="left">已选标签</van-divider>-->
-<!--  <van-tag :show="true" closeable size="medium" type="primary" @close="close">-->
-<!--    标签-->
-<!--  </van-tag>-->
-<!--  <van-tag :show="true" closeable size="medium" type="primary" @close="close">-->
-<!--    标签-->
-<!--  </van-tag>-->
-<!--  <van-tag :show="true" closeable size="medium" type="primary" @close="close">-->
-<!--    标签-->
-<!--  </van-tag>-->
-<!--  <van-divider content-position="left">-->
-<!--    <van-collapse v-modeL= "activeNames">-->
-<!--      <van-collapse-item title="标题1" name="1">-->
-<!--        代码是写出来给人看的，附带能在机器上运行。-->
-<!--      </van-collapse-item>-->
-<!--      <van-collapse-item title="标题2" name="2">-->
-<!--        技术无非就是那些开发它的人的共同灵魂。-->
-<!--      </van-collapse-item>-->
-<!--      <van-collapse-item title="标题3" name="3">-->
-<!--        在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准。-->
-<!--      </van-collapse-item>-->
-<!--    </van-collapse>-->
-
-<!--  </van-divider>-->
-
-<!--</template>-->
-
-<!--<script setup>-->
-<!--import {ref} from 'vue';-->
-<!--import {Toast} from 'vant';-->
-
-<!--const searchText = ref('');-->
-<!--const onSearch = (val) => Toast(val);-->
-<!--const onCancel = () => Toast('取消');-->
-
-<!--</script>-->
-
-<!--<style scoped>-->
-
-<!--</style>-->
-
 <template>
   <form action="/">
     <van-search
@@ -75,31 +23,59 @@
       v-model:main-active-index="activeIndex"
       :items="tagList"
   />
+
+  <div style="padding: 16px">
+    <van-button block type="primary" @click="doSearchResult">搜索</van-button>
+  </div>
+
+
 </template>
 
 <script setup>
 import {ref} from 'vue';
-import {Toast} from 'vant';
+import {useRouter} from 'vue-router';
 
+const router = useRouter();
 const searchText = ref('');
 
-const originTagList = [{
+const originTagList = [
+  {
+    text: '服务器',
+    children: [
+      {text: '比尔吉沃特', id: '比尔吉沃特'},
+      {text: '德玛西亚', id: '德玛西亚'},
+      {text: '弗雷尔卓德', id: '弗雷尔卓德'},
+      {text: '弗雷尔卓德', id: '弗雷尔卓德'},
+      {text: '恕瑞玛', id: '恕瑞玛'},
+      {text: '扭曲丛林', id: '扭曲丛林'},
+      {text: '巨龙之巢', id: '巨龙之巢'},
+
+    ],
+  },
+  {
+    text: '段位',
+    children: [
+      {text: '坚韧黑铁', id: '坚韧黑铁'},
+      {text: '英勇黄铜', id: '英勇黄铜'},
+      {text: '不屈白银', id: '不屈白银'},
+      {text: '荣耀黄金', id: '荣耀黄金'},
+      {text: '华贵铂金', id: '华贵铂金'},
+      {text: '璀璨钻石', id: '璀璨钻石'},
+      {text: '超凡大师', id: '超凡大师'},
+      {text: '傲视宗师', id: '傲视宗师'},
+      {text: '最强王者', id: '最强王者'},
+
+    ],
+  },
+  {
     text: '性别',
     children: [
       {text: '男', id: '男'},
       {text: '女', id: '女'},
     ],
   },
-  {
-    text: '年级',
-    children: [
-      {text: '大一', id: '大一'},
-      {text: '大33', id: '大二1111111111'},
-      {text: '大3333', id: '大二111111111'},
-      {text: '大333', id: '大二1111111111'},
 
-    ],
-  },
+
 ]
 
 let tagList = ref(originTagList);
@@ -129,6 +105,15 @@ const activeIndex = ref(0);
 const doClose = (tag) => {
   activeIds.value = activeIds.value.filter(item => {
     return item !== tag;
+  })
+}
+
+const doSearchResult = () => {
+  router.push({
+    path: '/user/list',
+    query: {
+      tags: activeIds.value
+    }
   })
 }
 

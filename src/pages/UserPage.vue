@@ -1,29 +1,29 @@
 <template>
-  <van-cell title="昵称" is-link to='/user/edit' :value="user.username"/>
-  <van-cell title="账号" is-link to='/user/edit' :value="user.userAccount"/>
-  <van-cell title="头像" is-link to='/user/edit'>
-    <img style="height: 48px" :src="user.avatarUrl"/>
-  </van-cell>
-  <van-cell title="性别" is-link to='/user/edit' :value="user.gender" @click="toEdit('gender','性别',user.gender)"/>
-  <van-cell title="电话" is-link to='/user/edit' :value="user.phone" @click="toEdit('phone','电话',user.phone)"/>
-  <van-cell title="邮箱" is-link to='/user/edit' :value="user.email"/>
-  <van-cell title="注册时间" :value="user.createTime.toISOString()"/>
+  <template v-if="user">
+    <van-cell title="当前用户" :value="user?.username" />
+    <van-cell title="修改信息" is-link to="/user/update" />
+    <van-cell title="我创建的队伍" is-link to="/user/team/create" />
+    <van-cell title="我加入的队伍" is-link to="/user/team/join" />
+
+  </template>
+  <van-button type="danger" block @click="logout" style="width: 80%;margin-left: 10%;margin-top: 90%">退出登录
+  </van-button>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
+import {onMounted, ref} from "vue";
+import myAxios from "../plugins/myAxios";
+import {showFailToast, showSuccessToast} from "vant/es";
+import {getCurrentUser} from "../services/user";
+import {currentID} from "../states/currentID";
 
-const user = {
-  id: 1,
-  username: '鱼皮',
-  userAccount: 'dogYupi',
-  avatarUrl: 'https://img1.baidu.com/it/u=1645832847,2375824523&fm=253&fmt=auto&app=138&f=JPEG?w=480&h=480',
-  gender: '男',
-  phone: '121311313',
-  email: '23432@qq.com',
-  createTime: new Date(),
-};
+const user = ref()
 
+onMounted(async () => {
+  user.value  = await getCurrentUser();
+
+})
 const router = useRouter();
 const toEdit = (editKey: string, editName: string, currentValue: string) => {
   router.push({
@@ -38,6 +38,22 @@ const toEdit = (editKey: string, editName: string, currentValue: string) => {
 
     }
   })
+}
+
+
+const logout =  () => {
+  const res = myAxios.post('/user/logout?id='+currentID.value)
+  // console.log(res.data, '用户注销');
+  // console.log(res.code, '退出码');
+  if (res.code === undefined  ) {
+    showSuccessToast('注销成功！');
+    // 跳转到之前的页面
+    router.push({
+      path: '/user/login'
+    });
+  } else {
+    showFailToast('注销失败！');
+  }
 }
 </script>
 
