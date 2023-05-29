@@ -3,7 +3,9 @@ import axios from "axios";
 
 const myAxios = axios.create({
     baseURL: 'http://localhost:8080/api',
-});
+    // baseURL: isDev ? 'http://localhost:9091/api' :'http://服务器地址/api'
+
+    });
 myAxios.defaults.withCredentials = true; // 允许携带 cookie
 // 添加请求拦截器
 myAxios.interceptors.request.use(function (config) {
